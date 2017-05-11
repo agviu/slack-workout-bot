@@ -5,6 +5,7 @@ function print_list($username, $all = FALSE){
 
   $sql = "SELECT workout, points, timestamp FROM workout_log "
       . "WHERE username='$username'";
+  echo "Hi *{$username}*! ";
   if (!$all) {
     $message = "Here are your workouts from current month:\r\n";
     $sql .= " AND month=" . (int) date('m') . " AND year=" . date('Y');
@@ -20,7 +21,7 @@ function print_list($username, $all = FALSE){
   while($row = mysqli_fetch_array($result)){
     $counter++;
     $points += $row['points'];
-    echo "* $username *: {$row['workout']} _({$row['points']} points)_ at {$row['timestamp']}\r\n";
+    echo "{$row['workout']} _({$row['points']} points)_ at {$row['timestamp']}\r\n";
   }
   if ($counter == 0) {
     echo "Nothing here yet, start moving _*{$username}*_ !";
