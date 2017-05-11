@@ -6,11 +6,11 @@ function print_list($username, $all = FALSE){
   $sql = "SELECT workout, points, timestamp FROM workout_log "
       . "WHERE username='$username'";
   if (!$all) {
-    $message = "Here are your workouts from current month:";
+    $message = "Here are your workouts from current month:\r\n";
     $sql .= " AND month=" . (int) date('m') . " AND year=" . date('Y');
   }
   else {
-    $message = "Here are all your workouts so far:";
+    $message = "Here are all your workouts so far:\r\n";
   }
 
   print $message;
@@ -22,7 +22,12 @@ function print_list($username, $all = FALSE){
     $points += $row['points'];
     echo "* $username *: {$row['workout']} _({$row['points']} points)_ at {$row['timestamp']}\r\n";
   }
-  print "*Total: $points points after $counter workouts.*\r\n";
+  if ($counter == 0) {
+    echo "Nothing here yet, start moving _*{$username}*_ !";
+  }
+  else {
+    print "*Total: $points points after $counter workouts.*\r\n";
+  }
 }
 
 // prints a random success message for the current user
@@ -30,7 +35,15 @@ function print_success($username){
   $outputs = array();
   $outputs[] = "Good job, _*{$username}*_ ! Do you feel fitter already?\r\n";
   $outputs[] = "There you go, _*{$username}*_ ! How does that feel?\r\n";
-  $outputs[] = "Someone has been working out... that was some awesome stairs climbing, _*{$username}*_ !\r\n";
+  $outputs[] = "Oho! Keep going _*{$username}*_ !\r\n";
+  $outputs[] = "Persistance is the KEY to success and you know that _*{$username}*_, right?";
+  $outputs[] = "Yeah! We are all proud of you _*{$username}*_ !";
+  $outputs[] = "A MA ZING !! :D";
+  $outputs[] = "You're rocking!!";
+  $outputs[] = "_*{$username}*_ is working out like a boss!";
+  $outputs[] = "Oh my gosh that was GREEEEEAT _*{$username}*_ !";
+  $outputs[] = "I am sure somebody is proud now! ;-)";
+  $outputs[] = "(...I do not have words...)";
 
   echo $outputs[array_rand($outputs, 1)];
 }
