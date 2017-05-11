@@ -50,13 +50,13 @@ function print_success($username){
 
 // prints the help message
 function print_help(){
-  echo "List of valid commands:\r\n";
+  echo "List of available commands:\r\n";
   foreach ($GLOBALS['config']['commands'] as $command => $info) {
     $message = "*/workout $command* _" . $info['description'] . "_";
     if (!in_array($command, array('list', 'help'))) {
-      $message .= " (". $info['points'] . " points)\r\n";
+      $message .= " (". $info['points'] . " points)";
     }
-    echo $message;
+    echo $message . "\r\n";
   }
 }
 
@@ -103,7 +103,7 @@ function workout_log($username, $command, $points) {
   $sql = "INSERT INTO workout_log "
     . "(username, workout, points, month, year) VALUES "
     . "('$username', '$command', $points, " . $month . ", ". $year . ")";
-  echo $sql;
+
   $result = mysqli_query($connection, $sql);
   
   if ($result) {
