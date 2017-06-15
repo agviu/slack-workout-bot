@@ -57,7 +57,7 @@ function print_help(){
   echo "List of available commands:\r\n";
   foreach ($GLOBALS['config']['commands'] as $command => $info) {
     $message = "*/workout $command* _" . $info['description'] . "_";
-    if (!in_array($command, array('list', 'help'))) {
+    if ($info['points']) {
       $message .= " (". $info['points'] . " points)";
     }
     echo $message . "\r\n";
