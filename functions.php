@@ -1,6 +1,9 @@
 <?php
+
+date_default_timezone_set(($config['timezone']?$config['timezone']:'Europe/London'));
+
 // prints out the list of all standings so far
-function print_list($username, $all = FALSE){
+function print_list($username, $all = FALSE) {
   global $connection;
 
   $sql = "SELECT workout, points, timestamp FROM workout_log "
@@ -32,7 +35,7 @@ function print_list($username, $all = FALSE){
 }
 
 // prints a random success message for the current user
-function print_success($username){
+function print_success($username) {
   $outputs = array();
   $outputs[] = "Good job, _*{$username}*_ ! Do you feel fitter already?\r\n";
   $outputs[] = "There you go, _*{$username}*_ ! How does that feel?\r\n";
@@ -62,7 +65,7 @@ function print_help(){
 }
 
 // prints the general error message
-function print_error($error_message = ''){
+function print_error($error_message = '') {
   if (!$error_message) {
     echo "Unfortunately something went wrong. Please check your settings.\r\n";
     return;
@@ -82,6 +85,10 @@ function execute_command($command, $username) {
       break;
     case 'help':
       print_help();
+      break;
+    case 'ranking':
+      // TODO: Add support for selecting which month & year
+      print_ranking();
       break;
     default:
       // Try to log it:
@@ -114,4 +121,39 @@ function workout_log($username, $command, $points) {
     print_error("There was an error while logging your workout. Please try again later.");
   }
   
+}
+
+// prints out the ranking
+function print_ranking($month = NULL, $year = NULL) {
+  if (!$month) {
+    $month = (int) date('m', strtotime('-1 month'));
+  }
+  if (!$year) {
+    $year = (int) date('Y', strtotime('-1 month'));
+  }
+
+  if (!(is_int($month) && $month > 0 && $month <= 12)) {
+    print "Month must be an integer from 1 to 12";
+    return;
+  }
+
+  if (!(is_int($year) && $year > 2000 && $year < 3000)) {
+    print "Not a valid year";
+    return;
+  }
+  global $connection;
+
+  $sql = "SELECT username, SUM(points) AS points FROM workout_log "
+      . "WHERE month = $month AND year = $year GROUP BY username ORDER BY points DESC";
+
+  print "This is the ranking for month $month and year $year\r\n";
+  $result = mysqli_query($connection, $sql);
+  $counter = 0;
+  while ($row = mysqli_fetch_array($result)) {
+    $counter++;
+    print "{$row['username']} _({$row['points']} points)_ \r\n";
+  }
+  if ($counter == 0) {
+    print "Nothing here yet!";
+  }
 }

@@ -5,6 +5,7 @@ $config['db_host'] = "database_host";
 $config['db_pass'] = "database_password";
 $config['db_name'] = "database_name";
 $config['slack_secret'] = "token_from_slack";
+$config['timezone'] = 'Europe/Helsinki';
 
 $config['commands'] = array(
   'help' => array(
@@ -13,6 +14,10 @@ $config['commands'] = array(
   ),
   'list' => array(
     'description' => 'Lists your log entries',
+    'points' => 0,
+  ),
+  'ranking' => array(
+    'description' => 'Get ranking from previous month',
     'points' => 0,
   ),
   'stairs' => array(
