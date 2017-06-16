@@ -142,16 +142,46 @@ function print_ranking($month = NULL, $year = NULL) {
     return;
   }
   global $connection;
+  global $config;
 
-  $sql = "SELECT username, SUM(points) AS points FROM workout_log "
+  if (!empty($config['report']) && $config['report'] == 'quarterly') {
+    if (in_array($month, array(3,4,5))) {
+      $in_months = '(1,2,3)';
+      $quarter = 1;
+    }
+    elseif (in_array($month, array(6,7,8))) {
+      $in_months = '(4,5,6)';
+      $quarter = 2;
+    }
+    elseif (in_array($month, array(9,10,11))) {
+      $in_months = '(7,8,9)';
+      $quarter = 3;
+    }
+    elseif (in_array($month, array(12,1,2))) {
+      $in_months = '(10,11,12)';
+      $quarter = 4;
+    }
+    else {
+      print "Wrong month";
+      return;
+    }
+    $sql = "SELECT username, SUM(points) AS points FROM workout_log "
+      . "WHERE month IN $in_months AND year = $year GROUP BY username ORDER BY points DESC";
+    print "This is the ranking for Q$quarter/$year\r\n";
+  }
+  else {
+    $sql = "SELECT username, SUM(points) AS points FROM workout_log "
       . "WHERE month = $month AND year = $year GROUP BY username ORDER BY points DESC";
+    print "This is the ranking for month $month and year $year\r\n";
+  }
 
-  print "This is the ranking for month $month and year $year\r\n";
   $result = mysqli_query($connection, $sql);
   $counter = 0;
-  while ($row = mysqli_fetch_array($result)) {
-    $counter++;
-    print "{$row['username']} _({$row['points']} points)_ \r\n";
+  if ($result) {
+    while ($row = mysqli_fetch_array($result)) {
+      $counter++;
+      print "{$row['username']} _({$row['points']} points)_ \r\n";
+    }
   }
   if ($counter == 0) {
     print "Nothing here yet!";
