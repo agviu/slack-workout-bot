@@ -10,8 +10,28 @@ function print_list($username, $all = FALSE) {
       . "WHERE username='$username'";
   echo "Hi *{$username}*! ";
   if (!$all) {
-    $message = "Here are your workouts from current month:\r\n";
-    $sql .= " AND month=" . (int) date('m') . " AND year=" . date('Y');
+    global $config;
+    if (!empty($config['report']) && $config['report'] == 'quarterly') {
+      $message = "Here are your workouts for current quarter:\r\n";
+      $month = (int) date('m');
+      if (in_array($month, array(1,2,3))) {
+        $in_months = '(1,2,3)';
+      }
+      elseif (in_array($month, array(4,5,6))) {
+        $in_months = '(4,5,6)';
+      }
+      elseif (in_array($month, array(7,8,9))) {
+        $in_months = '(7,8,9)';
+      }
+      elseif (in_array($month, array(10,11,12))) {
+        $in_months = '(10,11,12)';
+      }
+      $sql .= " AND month IN $in_months AND year = " . date('Y');
+    }
+    else {
+      $message = "Here are your workouts for current month:\r\n";
+      $sql .= " AND month=" . (int) date('m') . " AND year=" . date('Y');
+    }
   }
   else {
     $message = "Here are all your workouts so far:\r\n";
