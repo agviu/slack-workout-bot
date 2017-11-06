@@ -106,6 +106,9 @@ function execute_command($command, $username) {
     case 'help':
       print_help();
       break;
+    case 'ranking --month':
+      global $config;
+      $config['report'] = 'monthly';
     case 'ranking':
       // TODO: Add support for selecting which month & year
       print_ranking();
